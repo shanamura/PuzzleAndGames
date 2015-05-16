@@ -11,7 +11,7 @@
 USING_NS_CC;
 
 BallSprite::BallSprite()
-: _removeNo(0)
+: _removedNo(0)
 , _checkedX(false)
 , _checkedY(false)
 , _fallCount(0)
@@ -52,7 +52,7 @@ bool BallSprite::init(BallType type, bool visible)
 
 void BallSprite::resetParams()
 {
-    _removeNo = 0;
+    _removedNo = 0;
     _checkedX = false;
     _checkedY = false;
     _fallCount = 0;
@@ -97,9 +97,9 @@ void BallSprite::removingAndFallingAnimation(int maxRemovedNo)
 //ボールの消去アニメーション
 void BallSprite::removingAnimation(int maxRemovedNo)
 {
-    if(_removeNo > 0)
+    if(_removedNo > 0)
     {
-        auto delay1 = DelayTime::create(ONE_ACTION_TIME * (_removeNo - 1));
+        auto delay1 = DelayTime::create(ONE_ACTION_TIME * (_removedNo - 1));
         auto fade = FadeTo::create(ONE_ACTION_TIME, 0);
         auto delay2 = DelayTime::create(ONE_ACTION_TIME * (maxRemovedNo - 1));
         
@@ -116,9 +116,9 @@ void BallSprite::fallingAnimation(int maxremovedNo)
     {
         setPositionIndex(PositionIndex(_positionIndex.x, _positionIndex.y - _fallCount));
         
-        auto delay1 = DelayTime::create(ONE_ACTION_TIME * (maxremovedNo - 1));
+        auto delay1 = DelayTime::create(ONE_ACTION_TIME * maxremovedNo);
         auto show = Show::create();
-        auto move = MoveTo::create(ONE_ACTION_TIME, getPositionForPositionIndex(PositionIndex()));
+        auto move = MoveTo::create(ONE_ACTION_TIME, getPositionForPositionIndex(getPositionIndex()));
         
         runAction(Sequence::create(delay1, show, move, nullptr));
     }

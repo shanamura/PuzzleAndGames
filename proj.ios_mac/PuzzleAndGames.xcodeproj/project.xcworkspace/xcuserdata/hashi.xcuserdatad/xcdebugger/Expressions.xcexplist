@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "GameLayer::isSameBallType(BallSprite::PositionIndex, GameLayer::Direction):GameLayer.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "BallSprite::getPositionForPositionIndex(BallSprite::PositionIndex):BallSprite.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "GameLayer::existsLinedBalls():GameLayer.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "_maxRemovedNo &gt; 0">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "BallSprite::generateTag(BallSprite::PositionIndex):BallSprite.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "GameLayer::checkedBall(BallSprite::PositionIndex, GameLayer::Direction):GameLayer.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "Direction::x">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GameLayer::getAllBalls():GameLayer.cpp">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

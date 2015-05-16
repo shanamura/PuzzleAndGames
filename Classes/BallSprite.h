@@ -54,7 +54,7 @@ public:
     virtual bool init(BallType type, bool visible);
     
     //アクセッサの定義
-    CC_SYNTHESIZE(int, _removeNo, RemoveNo);
+    CC_SYNTHESIZE(int, _removedNo, RemovedNo);
     CC_SYNTHESIZE(bool, _checkedX, CheckedX);
     CC_SYNTHESIZE(bool, _checkedY, CheckedY);
     CC_SYNTHESIZE(int, _fallCount, FallCount);
