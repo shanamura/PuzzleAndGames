@@ -41,6 +41,8 @@ protected:
     std::default_random_engine _engine;
     std::discrete_distribution<int> _distForBall;
     
+    std::uniform_int_distribution<int> _distForMember;
+    
     BallSprite* _movingBall;
     bool _movedBall;
     
@@ -86,6 +88,15 @@ protected:
     //キャラの描画処理
     void initEnemy();
     void initMenbers();
+    
+    /*ダメージ計算とアニメーション関する処理*/
+    void calculateDamage(int &chainNum, int &healing, int &damage, std::set<int> &attackers);
+    bool isAttacker(BallSprite::BallType type, Character::Element element);
+    void attackToEnemy(int damage, std::set<int> attackers);
+    void healMember(int healing);
+    void attackFromEnemy();
+    void endAnimation();
+    cocos2d::Spawn* vibratingAnimation(int afterHp);
     
     
 public:

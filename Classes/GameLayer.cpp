@@ -25,6 +25,7 @@ GameLayer::GameLayer()
     std::random_device device;
     _engine = std::default_random_engine(device());
     _distForBall = std::discrete_distribution<int>{20, 20, 20, 20, 20, 10};
+    _distForMember = std::uniform_int_distribution<int>(0, 4);
 }
 
 Scene* GameLayer::createScene()
@@ -115,10 +116,10 @@ void GameLayer::initMenbers()
     std::vector<std::string> fileNames
     {
         "CardBlue.png",
-        "CardGreen.png",
-        "CardPurple.png",
         "CardRed.png",
-        "CardYellow.png"
+        "CardGreen.png",
+        "CardYellow.png",
+        "CardPurple.png"
     };
     
     std::vector<Character::Element> elements
@@ -267,7 +268,34 @@ void GameLayer::checksLinedBalls()
     }
     else
     {
-        _touchable = true;
+        int chainNum = 0;
+        int damage = 0;
+        int healing = 0;
+        std::set<int> attackers;
+        
+        //ダメージ量と回復量の計算
+        calculateDamage(chainNum, healing, damage, attackers);
+        
+        int afterHp = _enemyData->getHp() - damage;
+        
+        
+        if(damage > 0)
+        {
+            attackToEnemy(damage, attackers);
+        }
+        
+        if(healing > 0)
+        {
+            healMember(healing);
+        }
+        
+        if(afterHp > 0)
+        {
+            CallFunc* func = CallFunc::create(CC_CALLBACK_0(GameLayer::attackFromEnemy, this));
+            runAction(Sequence::create(DelayTime::create(0.5), func, nullptr));
+        }
+        
+        //_touchable = true;
     }
 }
 
@@ -550,7 +578,6 @@ void GameLayer::generateBalls(int xlineNum, int fallCount)
     }
 }
 
-
 //ボール操作終了処理
 void GameLayer::movedBall()
 {
@@ -560,6 +587,249 @@ void GameLayer::movedBall()
     _chainNumber = 0;
     _removeNumbers.clear();
     checksLinedBalls();
+}
+
+//ダメージ計算
+void GameLayer::calculateDamage(int &chainNum, int &healing, int &damage, std::set<int> &attackers)
+{
+    auto removeIt = _removeNumbers.begin();
+    
+    while (removeIt != _removeNumbers.end())
+    {
+        auto ballIt = (*removeIt).begin();
+        while (ballIt != (*removeIt).end())
+        {
+            if((*ballIt).first == BallSprite::BallType::Pink)
+            {
+                healing = healing + 5;
+            }
+            else
+            {
+                for(int i = 0; i < _memberDatum.size(); i++)
+                {
+                    auto memberData = _memberDatum.at(i);
+                    
+                    if(memberData->getHp() <= 0)
+                    {
+                        continue;
+                    }
+                    
+                    if(isAttacker((*ballIt).first, memberData->getElement()))
+                    {
+                        attackers.insert(i);
+                        damage = damage + Character::getDamage((*ballIt).second, chainNum, memberData, _enemyData);
+                    }
+                }
+            }
+            
+            chainNum++;
+            ballIt++;
+        }
+        
+        removeIt++;
+    }
+}
+
+//アタッカー判定
+bool GameLayer::isAttacker(BallSprite::BallType type, Character::Element element)
+{
+    switch (type) {
+        case BallSprite::BallType::Red:
+        {
+            if(element == Character::Element::Fire)
+            {
+                return true;
+            }
+            break;
+        }
+            
+        case BallSprite::BallType::Blue:
+        {
+            if(element == Character::Element::Water)
+            {
+                return true;
+            }
+            break;
+        }
+            
+        case BallSprite::BallType::Green:
+        {
+            if(element == Character::Element::Wind)
+            {
+                return true;
+            }
+            break;
+        }
+            
+        case BallSprite::BallType::Yellow:
+        {
+            if(element == Character::Element::Holy)
+            {
+                return true;
+            }
+            break;
+        }
+            
+        case BallSprite::BallType::Purple:
+        {
+            if(element == Character::Element::Shadow)
+            {
+                return true;
+            }
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    return false;
+}
+
+//敵への攻撃
+void GameLayer::attackToEnemy(int damage, std::set<int> attackers)
+{
+    float preHpPrecentage = _enemyData->getHpPercentage();
+    
+    int afterHp = _enemyData->getHp() - damage;
+    if(afterHp < 0)
+    {
+        afterHp = 0;
+    }
+    
+    _enemyData->setHp(afterHp);
+    
+    auto act = ProgressFromTo::create(0.5, preHpPrecentage, _enemyData->getHpPercentage());
+    _hpBarForEnemy->runAction(act);
+    
+    _enemy->runAction(vibratingAnimation(afterHp));
+    
+    for(auto attacker : attackers)
+    {
+        auto member = _members.at(attacker);
+        member->runAction(Sequence::create(MoveBy::create(0.1, Point(0, 10)),
+                                           MoveBy::create(0.1, Point(0, -10)),nullptr));
+    }
+}
+
+//回復処理
+void GameLayer::healMember(int healing)
+{
+    for (int i = 0; i < _memberDatum.size(); i++)
+    {
+        auto memberData = _memberDatum.at(i);
+        
+        if(memberData->getHp() <= 0)
+        {
+            continue;
+        }
+        
+        float preHpPrecentage = memberData->getHpPercentage();
+        int afterHp = memberData->getHp() + healing;
+        
+        if(afterHp > memberData->getMaxHp())
+        {
+            afterHp = memberData->getMaxHp();
+        }
+        
+        memberData->setHp(afterHp);
+        
+        auto act = ProgressFromTo::create(0.5, preHpPrecentage, memberData->getHpPercentage());
+        _hpBarForMembers.at(i)->runAction(act);
+    }
+}
+
+//敵からの攻撃
+void GameLayer::attackFromEnemy()
+{
+    if(!_enemyData->isAttackturn())
+    {
+        endAnimation();
+        return;
+    }
+    
+    int index;
+    Character* memberData;
+
+    do{
+        index = _distForMember(_engine);
+        memberData = _memberDatum.at(index);
+    }while (memberData->getHp() <= 0);
+    
+    auto member = _members.at(index);
+    auto hpBarForMember = _hpBarForMembers.at(index);
+    
+    float preHpPrecentage = memberData->getHpPercentage();
+    int afterHp = memberData->getHp() - 25;
+    
+    if(afterHp > memberData->getMaxHp())
+    {
+        afterHp = memberData->getMaxHp();
+    }
+    memberData->setHp(afterHp);
+    
+    
+    auto act = ProgressFromTo::create(0.5, preHpPrecentage, memberData->getHpPercentage());
+    hpBarForMember->runAction(act);
+    
+    member->runAction(vibratingAnimation(afterHp));
+    
+    auto seq = Sequence::create(MoveBy::create(0.1, Point(0, -10)),
+                                MoveBy::create(0.1, Point(0, 10)), nullptr);
+    _enemy->runAction(seq);
+    
+    
+    //全滅チェック
+    bool allMemberHpZero = true;
+    
+    for(auto character : _memberDatum)
+    {
+        if(character->getHp() > 0)
+        {
+            allMemberHpZero = false;
+            break;
+        }
+    }
+    
+    
+    if(!allMemberHpZero)
+    {
+        CallFunc* func = CallFunc::create(CC_CALLBACK_0(GameLayer::endAnimation, this));
+        runAction(Sequence::create(DelayTime::create(0.5), func, nullptr));
+    }
+}
+
+void GameLayer::endAnimation()
+{
+    _touchable = true;
+}
+
+cocos2d::Spawn* GameLayer::vibratingAnimation(int afterHp)
+{
+    auto move = Sequence::create(MoveBy::create(0.025, Point(5, 5)),
+                                 MoveBy::create(0.025, Point(-5, -5)),
+                                 MoveBy::create(0.025, Point(-5, -5)),
+                                 MoveBy::create(0.025, Point(5, 5)),
+                                 MoveBy::create(0.025, Point(5, -5)),
+                                 MoveBy::create(0.025, Point(-5, 5)),
+                                 MoveBy::create(0.025, Point(-5, 5)),
+                                 MoveBy::create(0.025, Point(5, -5)),
+                                nullptr);
+    
+    Action* tint;
+    if(afterHp > 0)
+    {
+        tint = Sequence::create(TintTo::create(0, 255, 0, 0),
+                                DelayTime::create(0.2),
+                                TintTo::create(0, 255, 255, 255),
+                                nullptr);
+    }
+    else
+    {
+        tint = TintTo::create(0, 255, 0, 0);
+    }
+    
+    return Spawn::create(move, tint, nullptr);
 }
 
 /*各種タッチイベントの処理*/
