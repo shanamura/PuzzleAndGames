@@ -11,6 +11,7 @@
 
 #include "cocos2d.h"
 #include "BallSprite.h"
+#include "Character.h"
 #include <random>
 
 class GameLayer : public cocos2d::Layer
@@ -48,6 +49,17 @@ protected:
     int _chainNumber;
     std::vector<std::map<BallSprite::BallType, int>> _removeNumbers;
     
+    //エネミー情報
+    Character* _enemyData;
+    cocos2d::Sprite* _enemy;
+    cocos2d::ProgressTimer* _hpBarForEnemy;
+    
+    //メンバー情報
+    cocos2d::Vector<Character*> _memberDatum;
+    cocos2d::Vector<cocos2d::Sprite*> _members;
+    cocos2d::Vector<cocos2d::ProgressTimer*> _hpBarForMembers;
+    
+    
     void initBackground();
     void initBalls();
     BallSprite* newBalls(BallSprite::PositionIndex positionIndex, bool visible);
@@ -57,6 +69,7 @@ protected:
     
     //ボール操作終了処理
     void movedBall();
+    
     
     /*ボールの消去とアニメーションに関する処理*/
     void checksLinedBalls();
@@ -68,6 +81,12 @@ protected:
     void removeAndGenerateBalls();
     void generateBalls(int xlineNum, int fallCount);
     void animationBalls();
+    
+    
+    //キャラの描画処理
+    void initEnemy();
+    void initMenbers();
+    
     
 public:
     GameLayer();

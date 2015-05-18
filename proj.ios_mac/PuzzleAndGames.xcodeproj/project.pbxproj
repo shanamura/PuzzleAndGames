@@ -14,6 +14,7 @@
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		46880B8819C43A87006E1F66 /* AppDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46880B8419C43A87006E1F66 /* AppDelegate.cpp */; };
 		46880B8919C43A87006E1F66 /* AppDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46880B8419C43A87006E1F66 /* AppDelegate.cpp */; };
+		4C1379491B09AF7600CA76CE /* Character.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C1379471B09AF7500CA76CE /* Character.cpp */; };
 		4CD5EC2C1B03A5830027A6D0 /* 0.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD5EC0B1B03A5830027A6D0 /* 0.png */; };
 		4CD5EC2D1B03A5830027A6D0 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD5EC0C1B03A5830027A6D0 /* 1.png */; };
 		4CD5EC2E1B03A5830027A6D0 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD5EC0D1B03A5830027A6D0 /* 2.png */; };
@@ -131,6 +132,8 @@
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		46880B8419C43A87006E1F66 /* AppDelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppDelegate.cpp; sourceTree = "<group>"; };
 		46880B8519C43A87006E1F66 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		4C1379471B09AF7500CA76CE /* Character.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Character.cpp; sourceTree = "<group>"; };
+		4C1379481B09AF7600CA76CE /* Character.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Character.h; sourceTree = "<group>"; };
 		4CD5EC0B1B03A5830027A6D0 /* 0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.png; sourceTree = "<group>"; };
 		4CD5EC0C1B03A5830027A6D0 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		4CD5EC0D1B03A5830027A6D0 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
@@ -370,6 +373,8 @@
 				4CDAFF261B03ED820034B406 /* BallSprite.h */,
 				4CDAFF281B050C6C0034B406 /* GameLayer.cpp */,
 				4CDAFF291B050C6C0034B406 /* GameLayer.h */,
+				4C1379471B09AF7500CA76CE /* Character.cpp */,
+				4C1379481B09AF7600CA76CE /* Character.h */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -593,6 +598,7 @@
 			files = (
 				46880B8819C43A87006E1F66 /* AppDelegate.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
+				4C1379491B09AF7600CA76CE /* Character.cpp in Sources */,
 				4CDAFF271B03ED820034B406 /* BallSprite.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
 				503AE10117EB989F00D1A890 /* main.m in Sources */,

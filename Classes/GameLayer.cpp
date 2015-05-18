@@ -10,6 +10,7 @@
 
 #define BALL_NUM_X 6
 #define BALL_NUM_Y 5
+#define WINSIZE Director::getInstance()->getWinSize()
 
 USING_NS_CC;
 
@@ -45,6 +46,8 @@ bool GameLayer::init()
     }
     
     initBackground();
+    initEnemy();
+    initMenbers();
     initBalls();
     
     //タッチ操作のイベント取得
@@ -60,11 +63,103 @@ bool GameLayer::init()
 
 void GameLayer::initBackground()
 {
+    //キャラ画面用背景
+    auto bgForCharacter = Sprite::create("Background1.png");
+    bgForCharacter->setAnchorPoint(Point(0, 1));
+    bgForCharacter->setPosition(Point(0, WINSIZE.height));
+    
+    addChild(bgForCharacter, BgForCharacter);
+
+    //パズル画面用背景
     auto bgForPuzzle = Sprite::create("Background2.png");
     bgForPuzzle->setAnchorPoint(Point::ZERO);
     bgForPuzzle->setPosition(Point::ZERO);
     
     addChild(bgForPuzzle, BgForPuzzle);
+}
+
+//敵の表示
+void GameLayer::initEnemy()
+{
+    _enemyData = Character::create();
+    _enemyData->retain();
+    _enemyData->setMaxHp(10000);    //最大HP
+    _enemyData->setHp(10000);       //現在のHP
+    _enemyData->setElement(Character::Element::Wind);
+    _enemyData->setTurnCount(3);
+    
+    _enemy = Sprite::create("Enemy1.png");
+    _enemy->setPosition(Point(320, 660 + (WINSIZE.height - 660) / 2));
+    addChild(_enemy, Enemy);
+    
+    //HPの表示
+    auto hpBg = Sprite::create("HpEnemyBackground.png");
+    hpBg->setPosition(Point(320, 530 + (WINSIZE.height - 660) / 2));
+    addChild(hpBg, EnemyHp);
+    
+    //HPバーの表示
+    _hpBarForEnemy = ProgressTimer::create(Sprite::create("HpEnemyRed.png"));
+    _hpBarForEnemy->setPosition(Point(hpBg->getContentSize().width / 2,
+                                      hpBg->getContentSize().height / 2));
+    _hpBarForEnemy->setType(ProgressTimer::Type::BAR);
+    _hpBarForEnemy->setMidpoint(Point::ZERO);
+    _hpBarForEnemy->setBarChangeRate(Point(1, 0));
+    _hpBarForEnemy->setPercentage(_enemyData->getHpPercentage());
+    
+    hpBg->addChild(_hpBarForEnemy);
+}
+
+//メンバーの表示
+void GameLayer::initMenbers()
+{
+    std::vector<std::string> fileNames
+    {
+        "CardBlue.png",
+        "CardGreen.png",
+        "CardPurple.png",
+        "CardRed.png",
+        "CardYellow.png"
+    };
+    
+    std::vector<Character::Element> elements
+    {
+        Character::Element::Water,
+        Character::Element::Fire,
+        Character::Element::Wind,
+        Character::Element::Holy,
+        Character::Element::Shadow
+    };
+    
+    for(int i = 0; i < fileNames.size(); i++)
+    {
+        auto memberData = Character::create();
+        memberData->setMaxHp(200);              //最大HP
+        memberData->setHp(200);                 //現在のHP
+        memberData->setElement(elements[i]);
+        _memberDatum.pushBack(memberData);
+        
+        auto member = Sprite::create(fileNames[i].c_str());
+        member->setPosition(Point(70 + i * 125, 598));
+        addChild(member, Char);
+        
+        //HPの表示
+        auto hpBg = Sprite::create("HpCardBackground.png");
+        hpBg->setPosition(Point(70 + i * 125, 554));
+        addChild(hpBg, CharHp);
+        
+        //HPバーの表示
+        auto hpBarForMember = ProgressTimer::create(Sprite::create("HpCardGreen.png"));
+        hpBarForMember->setPosition(Point(hpBg->getContentSize().width / 2,
+                                          hpBg->getContentSize().height / 2));
+        hpBarForMember->setType(ProgressTimer::Type::BAR);
+        hpBarForMember->setMidpoint(Point::ZERO);
+        hpBarForMember->setBarChangeRate(Point(1, 0));
+        hpBarForMember->setPercentage(memberData->getHpPercentage());
+        hpBg->addChild(hpBarForMember);
+        
+        _members.pushBack(member);
+        _hpBarForMembers.pushBack(hpBarForMember);
+    }
 }
 
 void GameLayer::initBalls()
