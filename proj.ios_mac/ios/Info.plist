@@ -11,7 +11,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Icon-57.png</string>
 	<key>CFBundleIdentifier</key>
-	<string>net.tks2.projects</string>
+	<string>net.shanamara.PuzzleAnGames</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
