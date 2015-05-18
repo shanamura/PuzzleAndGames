@@ -61,6 +61,9 @@ protected:
     cocos2d::Vector<cocos2d::Sprite*> _members;
     cocos2d::Vector<cocos2d::ProgressTimer*> _hpBarForMembers;
     
+    //ステージレベル
+    int _level;
+    int _nextLevel;
     
     void initBackground();
     void initBalls();
@@ -98,12 +101,20 @@ protected:
     void endAnimation();
     cocos2d::Spawn* vibratingAnimation(int afterHp);
     
+    /*ステージレベル表示に関する処理*/
+    void initLevelLayer();
+    void removeLevelLayer(float dt);
+    void winAnimation();
+    void loseAnimation();
+    void nextScene(float dt);
+    
     
 public:
     GameLayer();
-    virtual bool init();
-    CREATE_FUNC(GameLayer);
-    static cocos2d::Scene* createScene();
+    virtual bool init(int level);
+    //CREATE_FUNC(GameLayer);
+    static GameLayer* create(int level);
+    static cocos2d::Scene* createScene(int level = 1);
 
     virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* unused_event);
     virtual void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* unused_event);

@@ -153,6 +153,38 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "4"
             endingLineNumber = "4">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GameLayer::GameLayer()"
+                  moduleName = "PuzzleAndGames iOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/random"
+                  timestampString = "453653580.189556"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "5855"
+                  endingLineNumber = "5855"
+                  offsetFromSymbolStart = "18">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GameLayer::GameLayer()"
+                  moduleName = "PuzzleAndGames iOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/hashi/Documents/cocos2d-x/project/PuzzleAndGames/Classes/GameLayer.cpp"
+                  timestampString = "453653580.191257"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -162,12 +194,92 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../Classes/GameLayer.cpp"
-            timestampString = "453650384.640164"
+            timestampString = "453653692.983284"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "773"
-            endingLineNumber = "773"
+            startingLineNumber = "826"
+            endingLineNumber = "826"
             landmarkName = "GameLayer::attackFromEnemy()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Classes/GameLayer.cpp"
+            timestampString = "453653692.983284"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "GameLayer::init(int level)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Classes/GameLayer.cpp"
+            timestampString = "453653692.983284"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "GameLayer::init(int level)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Classes/GameLayer.cpp"
+            timestampString = "453653692.983284"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
+            landmarkName = "GameLayer::initLevelLayer()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Classes/GameLayer.cpp"
+            timestampString = "453653692.983284"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "GameLayer::initLevelLayer()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Classes/GameLayer.cpp"
+            timestampString = "453653692.983284"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "GameLayer::initLevelLayer()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

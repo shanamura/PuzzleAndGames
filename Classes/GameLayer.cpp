@@ -11,12 +11,15 @@
 #define BALL_NUM_X 6
 #define BALL_NUM_Y 5
 #define WINSIZE Director::getInstance()->getWinSize()
+#define TAG_LEVEL_LAYER 10000
 
 USING_NS_CC;
 
 //コンストラクタ
 GameLayer::GameLayer()
-: _movingBall(nullptr)
+: _level(0)
+, _nextLevel(0)
+, _movingBall(nullptr)
 , _movedBall(false)
 , _touchable(true)
 , _maxRemovedNo(0)
@@ -28,28 +31,42 @@ GameLayer::GameLayer()
     _distForMember = std::uniform_int_distribution<int>(0, 4);
 }
 
-Scene* GameLayer::createScene()
+//シーンの作成
+Scene* GameLayer::createScene(int level)
 {
     auto scene = Scene::create();
-    auto layer = GameLayer::create();
+    auto layer = GameLayer::create(level);
     
     scene->addChild(layer);
     
     return scene;
 }
 
+//インスタンスの生成
+GameLayer* GameLayer::create(int level)
+{
+    GameLayer *pRet = new GameLayer();
+    pRet->init(level);
+    pRet->autorelease();
+    
+    return pRet;
+}
+
 //初期化
-bool GameLayer::init()
+bool GameLayer::init(int level)
 {
     if(!Layer::init())
     {
         return false;
     }
     
+    _level = level;
+
     initBackground();
     initEnemy();
     initMenbers();
     initBalls();
+    initLevelLayer();
     
     //タッチ操作のイベント取得
     auto touchListener = EventListenerTouchOneByOne::create();
@@ -61,6 +78,38 @@ bool GameLayer::init()
     
     return true;
 }
+
+//ステージレベル表示
+void GameLayer::initLevelLayer()
+{
+    auto levelLayer = LayerColor::create(Color4B(0, 0, 0, 191), WINSIZE.width,
+                                         WINSIZE.height);
+    levelLayer->setPosition(Point::ZERO);
+    levelLayer->setTag(TAG_LEVEL_LAYER);
+    addChild(levelLayer, Level);
+    
+    auto levelSprite = Sprite::create("Level.png");
+    levelSprite->setPosition(Point(WINSIZE.width * 0.45, WINSIZE.height * 0.5));
+    levelLayer->addChild(levelSprite);
+    
+    auto levelNumPath = StringUtils::format("%d.png", _level);
+    auto levelNumSprite = Sprite::create(levelNumPath.c_str());
+    levelNumSprite->setPosition(Point(WINSIZE.width * 0.85, WINSIZE.height * 0.5));
+    levelLayer->addChild(levelNumSprite);
+    
+    scheduleOnce(schedule_selector(GameLayer::removeLevelLayer), 1.5);
+}
+
+void GameLayer::removeLevelLayer(float dt)
+{
+    _touchable = true;
+    
+    auto levelLayer = getChildByTag(TAG_LEVEL_LAYER);
+    levelLayer->runAction(Sequence::create(FadeTo::create(0.5, 0),
+                                           RemoveSelf::create(),
+                                           nullptr));
+}
+
 
 void GameLayer::initBackground()
 {
@@ -84,12 +133,12 @@ void GameLayer::initEnemy()
 {
     _enemyData = Character::create();
     _enemyData->retain();
-    _enemyData->setMaxHp(10000);    //最大HP
-    _enemyData->setHp(10000);       //現在のHP
+    _enemyData->setMaxHp(1000 * _level);   //最大HP
+    _enemyData->setHp(1000 * _level);      //現在のHP
     _enemyData->setElement(Character::Element::Wind);
     _enemyData->setTurnCount(3);
     
-    _enemy = Sprite::create("Enemy1.png");
+    _enemy = Sprite::create(StringUtils::format("Enemy%d.png", _level));
     _enemy->setPosition(Point(320, 660 + (WINSIZE.height - 660) / 2));
     addChild(_enemy, Enemy);
     
@@ -289,13 +338,17 @@ void GameLayer::checksLinedBalls()
             healMember(healing);
         }
         
-        if(afterHp > 0)
+        CallFunc* func;
+        if(afterHp <= 0)
         {
-            CallFunc* func = CallFunc::create(CC_CALLBACK_0(GameLayer::attackFromEnemy, this));
-            runAction(Sequence::create(DelayTime::create(0.5), func, nullptr));
+            func = CallFunc::create(CC_CALLBACK_0(GameLayer::winAnimation, this));
         }
-        
-        //_touchable = true;
+        else
+        {
+            func = CallFunc::create(CC_CALLBACK_0(GameLayer::attackFromEnemy, this));
+        }
+
+        runAction(Sequence::create(DelayTime::create(0.5), func, nullptr));
     }
 }
 
@@ -791,12 +844,16 @@ void GameLayer::attackFromEnemy()
         }
     }
     
-    
-    if(!allMemberHpZero)
+    CallFunc* func;
+    if(allMemberHpZero)
     {
-        CallFunc* func = CallFunc::create(CC_CALLBACK_0(GameLayer::endAnimation, this));
-        runAction(Sequence::create(DelayTime::create(0.5), func, nullptr));
+        func = CallFunc::create(CC_CALLBACK_0(GameLayer::loseAnimation, this));
     }
+    else
+    {
+        func = CallFunc::create(CC_CALLBACK_0(GameLayer::endAnimation, this));
+    }
+    runAction(Sequence::create(DelayTime::create(0.5), func, nullptr));
 }
 
 void GameLayer::endAnimation()
@@ -830,6 +887,58 @@ cocos2d::Spawn* GameLayer::vibratingAnimation(int afterHp)
     }
     
     return Spawn::create(move, tint, nullptr);
+}
+
+//勝利アニメーション
+void GameLayer::winAnimation()
+{
+    auto whiteLayer = LayerColor::create(Color4B(255, 255, 255, 127),
+                                         WINSIZE.width, WINSIZE.height);
+    whiteLayer->setPosition(Point::ZERO);
+    addChild(whiteLayer, Result);
+    
+    auto win = Sprite::create("Win.png");
+    win->setPosition(Point(WINSIZE.width / 2, WINSIZE.height / 2));
+    addChild(win, Result);
+    
+    if(_level >= 3)
+    {
+        _nextLevel = 1;
+    }
+    else
+    {
+        _nextLevel = _level + 1;
+    }
+    
+    //勝利した場合は次のステージへ移動
+    scheduleOnce(schedule_selector(GameLayer::nextScene), 3);
+    
+
+}
+
+//ステージ遷移処理
+void GameLayer::nextScene(float dt)
+{
+    auto scene = GameLayer::createScene(_nextLevel);
+    Director::getInstance()->replaceScene(scene);
+}
+
+//敗北アニメーション
+void GameLayer::loseAnimation()
+{
+    auto blackLayer = LayerColor::create(Color4B(0, 0, 0, 127),
+                                         WINSIZE.width, WINSIZE.height);
+    blackLayer->setPosition(Point::ZERO);
+    addChild(blackLayer, Result);
+    
+    auto lose = Sprite::create("Lose.png");
+    lose->setPosition(Point(WINSIZE.width / 2, WINSIZE.height / 2));
+    addChild(lose, Result);
+    
+    _nextLevel = 1;
+    
+    //敗北した場合は同じステージを再度挑戦
+    scheduleOnce(schedule_selector(GameLayer::nextScene), 3);
 }
 
 /*各種タッチイベントの処理*/
