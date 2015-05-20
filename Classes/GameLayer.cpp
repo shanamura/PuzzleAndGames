@@ -188,27 +188,37 @@ void GameLayer::initMenbers()
         memberData->setElement(elements[i]);
         _memberDatum.pushBack(memberData);
         
+        //全体のHPの算出
+        _memberAllHp += memberData->getMaxHp();
+        _memberHp = _memberAllHp;
+        
         auto member = Sprite::create(fileNames[i].c_str());
         member->setPosition(Point(70 + i * 125, 598));
         addChild(member, Char);
         
-        //HPの表示
+        //HPの表示（メンバーごと
+        //auto hpBg = Sprite::create("HpCardBackground.png");
+        //hpBg->setPosition(Point(70 + i * 125, 554));
+        //addChild(hpBg, CharHp);
+        
+        //HPの表示（全体
         auto hpBg = Sprite::create("HpCardBackground.png");
-        hpBg->setPosition(Point(70 + i * 125, 554));
+        hpBg->setScale(6.5, 1);
+        hpBg->setPosition(Point(320, 540));
         addChild(hpBg, CharHp);
         
         //HPバーの表示
-        auto hpBarForMember = ProgressTimer::create(Sprite::create("HpCardGreen.png"));
-        hpBarForMember->setPosition(Point(hpBg->getContentSize().width / 2,
+        _hpBarFromMembers = ProgressTimer::create(Sprite::create("HpCardGreen.png"));
+        _hpBarFromMembers->setPosition(Point(hpBg->getContentSize().width / 2,
                                           hpBg->getContentSize().height / 2));
-        hpBarForMember->setType(ProgressTimer::Type::BAR);
-        hpBarForMember->setMidpoint(Point::ZERO);
-        hpBarForMember->setBarChangeRate(Point(1, 0));
-        hpBarForMember->setPercentage(memberData->getHpPercentage());
-        hpBg->addChild(hpBarForMember);
+        _hpBarFromMembers->setType(ProgressTimer::Type::BAR);
+        _hpBarFromMembers->setMidpoint(Point::ZERO);
+        _hpBarFromMembers->setBarChangeRate(Point(1, 0));
+        _hpBarFromMembers->setPercentage(memberData->getHpPercentage());
+        hpBg->addChild(_hpBarFromMembers);
         
         _members.pushBack(member);
-        _hpBarForMembers.pushBack(hpBarForMember);
+        //_hpBarForMembers.pushBack(hpBarForMember);
     }
 }
 
@@ -765,6 +775,83 @@ void GameLayer::attackToEnemy(int damage, std::set<int> attackers)
     }
 }
 
+//全体
+//回復処理
+void GameLayer::healMember(int healing)
+{
+        float preHpPrecentage = _memberHp * 100.f / _memberAllHp;
+        int afterHp = _memberHp + healing;
+        
+        if(afterHp > _memberAllHp)
+        {
+            afterHp = _memberAllHp;
+        }
+    
+        auto act = ProgressFromTo::create(0.5, preHpPrecentage, afterHp * 100.f / _memberAllHp);
+        _hpBarFromMembers->runAction(act);
+}
+
+//敵からの攻撃
+void GameLayer::attackFromEnemy()
+{
+    if(!_enemyData->isAttackturn())
+    {
+        endAnimation();
+        return;
+    }
+    
+    //int index;
+    //Character* memberData;
+    
+    //do{
+    //    index = _distForMember(_engine);
+    //    memberData = _memberDatum.at(index);
+    //}while (_memberAllHp <= 0);
+    
+    //auto member = _members.at(index);
+    //auto hpBarForMember = _hpBarForMembers.at(index);
+    
+    float preHpPrecentage = _memberHp * 100.f / _memberAllHp;
+    int afterHp = _memberAllHp - 200;
+    
+    if(afterHp > _memberAllHp)
+    {
+        afterHp = _memberAllHp;
+    }
+    //memberData->setHp(afterHp);
+    _memberAllHp = afterHp;
+    
+    auto act = ProgressFromTo::create(0.5, preHpPrecentage, afterHp * 100.f / _memberAllHp);
+    _hpBarFromMembers->runAction(act);
+    
+    _hpBarFromMembers->runAction(vibratingAnimation(afterHp));
+    
+    auto seq = Sequence::create(MoveBy::create(0.1, Point(0, -10)),
+                                MoveBy::create(0.1, Point(0, 10)), nullptr);
+    _enemy->runAction(seq);
+    
+    
+    //全滅チェック
+    bool allMemberHpZero = true;
+    
+    if(_memberAllHp > 0)
+        {
+            allMemberHpZero = false;
+        }
+    
+    CallFunc* func;
+    if(allMemberHpZero)
+    {
+        func = CallFunc::create(CC_CALLBACK_0(GameLayer::loseAnimation, this));
+    }
+    else
+    {
+        func = CallFunc::create(CC_CALLBACK_0(GameLayer::endAnimation, this));
+    }
+    runAction(Sequence::create(DelayTime::create(0.5), func, nullptr));
+}
+
+/*メンバーごと
 //回復処理
 void GameLayer::healMember(int healing)
 {
@@ -855,6 +942,7 @@ void GameLayer::attackFromEnemy()
     }
     runAction(Sequence::create(DelayTime::create(0.5), func, nullptr));
 }
+*/
 
 void GameLayer::endAnimation()
 {

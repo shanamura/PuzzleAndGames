@@ -190,17 +190,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../Classes/GameLayer.cpp"
-            timestampString = "453653692.983284"
+            timestampString = "453809504.117113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "826"
-            endingLineNumber = "826"
-            landmarkName = "GameLayer::attackFromEnemy()"
-            landmarkType = "5">
+            startingLineNumber = "913"
+            endingLineNumber = "913">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -280,6 +278,22 @@
             startingLineNumber = "99"
             endingLineNumber = "99"
             landmarkName = "GameLayer::initLevelLayer()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Classes/GameLayer.cpp"
+            timestampString = "453808733.160164"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "827"
+            endingLineNumber = "827"
+            landmarkName = "GameLayer::attackFromEnemy()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

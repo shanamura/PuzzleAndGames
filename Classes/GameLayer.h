@@ -59,7 +59,11 @@ protected:
     //メンバー情報
     cocos2d::Vector<Character*> _memberDatum;
     cocos2d::Vector<cocos2d::Sprite*> _members;
-    cocos2d::Vector<cocos2d::ProgressTimer*> _hpBarForMembers;
+    //cocos2d::Vector<cocos2d::ProgressTimer*> _hpBarForMembers;
+    cocos2d::ProgressTimer* _hpBarFromMembers;
+    
+    int _memberAllHp;
+    int _memberHp;
     
     //ステージレベル
     int _level;
