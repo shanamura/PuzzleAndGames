@@ -180,6 +180,9 @@ void GameLayer::initMenbers()
         Character::Element::Shadow
     };
     
+    _memberAllHp = 0;
+    _memberHp = 0;
+    
     for(int i = 0; i < fileNames.size(); i++)
     {
         auto memberData = Character::create();
@@ -214,7 +217,7 @@ void GameLayer::initMenbers()
         _hpBarFromMembers->setType(ProgressTimer::Type::BAR);
         _hpBarFromMembers->setMidpoint(Point::ZERO);
         _hpBarFromMembers->setBarChangeRate(Point(1, 0));
-        _hpBarFromMembers->setPercentage(memberData->getHpPercentage());
+        _hpBarFromMembers->setPercentage(_memberHp * 100.f / _memberAllHp);
         hpBg->addChild(_hpBarFromMembers);
         
         _members.pushBack(member);
@@ -786,6 +789,8 @@ void GameLayer::healMember(int healing)
         {
             afterHp = _memberAllHp;
         }
+        _memberHp = afterHp;
+
     
         auto act = ProgressFromTo::create(0.5, preHpPrecentage, afterHp * 100.f / _memberAllHp);
         _hpBarFromMembers->runAction(act);
@@ -812,14 +817,14 @@ void GameLayer::attackFromEnemy()
     //auto hpBarForMember = _hpBarForMembers.at(index);
     
     float preHpPrecentage = _memberHp * 100.f / _memberAllHp;
-    int afterHp = _memberAllHp - 200;
+    int afterHp = _memberHp - 200;
     
     if(afterHp > _memberAllHp)
     {
         afterHp = _memberAllHp;
     }
     //memberData->setHp(afterHp);
-    _memberAllHp = afterHp;
+    _memberHp = afterHp;
     
     auto act = ProgressFromTo::create(0.5, preHpPrecentage, afterHp * 100.f / _memberAllHp);
     _hpBarFromMembers->runAction(act);
@@ -834,7 +839,7 @@ void GameLayer::attackFromEnemy()
     //全滅チェック
     bool allMemberHpZero = true;
     
-    if(_memberAllHp > 0)
+    if(_memberHp > 0)
         {
             allMemberHpZero = false;
         }
